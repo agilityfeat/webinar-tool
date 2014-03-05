@@ -1,0 +1,1 @@
+The public folder will eventually contain static assets like javascript files, images, and CSS
