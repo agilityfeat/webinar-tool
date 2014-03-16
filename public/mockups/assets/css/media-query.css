@@ -1,0 +1,106 @@
+/* Smaller than standard 960 (devices and browsers) */
+  @media only screen and (max-width: 959px) {
+    .rateOptionsWrap{
+      margin-right: 120px;
+    }
+  }
+ 
+  /* Tablet Portrait size to standard 960 (devices and browsers) */
+  @media only screen and (min-width: 768px) and (max-width: 959px) {
+    .rateOptionsWrap{
+      margin-right: 80px;
+    }
+  }
+ 
+  /* All Mobile Sizes (devices and browser) */
+  @media only screen and (max-width: 767px) {
+    .playerWindowWrap{
+      display: ;
+    }
+    .commentsWindowWrap{
+      display: none;
+      margin-bottom: 10px;
+    }
+    .leftBorder{
+      border: none;
+      margin-bottom: 0;
+    }
+    .graphWrap{
+      display: none;
+    }
+    .rightText, .rightLeft{
+      display: none;
+    }
+    .initialCall{
+      display: none;
+    }
+    .btnShow{
+      display: block;
+    }
+    .rateOptionsWrap{
+      margin: 0 40px;
+    }
+    .showCommentBox{
+      display: block;
+    }
+    .commentSlideWrap{
+      display: none;
+    }
+    .hideCommentBox{
+      display: inline-block !important;  
+    }
+    .sliderWrap .slider img,
+    .sliderWrap .sliderEspectador img{
+      max-width: none;
+      max-height: none;
+      width: 100%;
+      height: auto;
+    }
+  }
+ 
+  /* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
+  @media only screen and (min-width: 480px) and (max-width: 767px) {
+  }
+ 
+  /* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
+  @media only screen and (max-width: 479px) {
+    .colGraphWrap{
+      display: none;
+    }
+    .sliderControls{
+      position: relative;
+    }
+    .sliderControlsEspectador{
+      padding-bottom: 0;
+    }
+    .sliderControls ul.slideCount{
+      position: absolute;
+      top:0;
+      left: 0;
+      z-index: 10;
+      margin: -40px 0 0;
+      width: 100%;
+    }
+    .timeLapseWrap{
+      display: block;
+    }
+    .rateSlideWrap > span{
+      margin-top: 0;
+    }
+    .commentSlideWrap > span{
+      margin-top: 10px;
+    }
+    .rateOptionsWrap{
+      margin: 0 20px;
+    }
+    footer{
+      width: 100%;
+      height: auto;
+      padding-bottom: 10px;  
+    }
+  }
+  
+  
+  
+  
+  

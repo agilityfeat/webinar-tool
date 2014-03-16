@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>WebRTC Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable = no">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Loading Goolge Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,300,400,700' rel='stylesheet' type='text/css'>
+        
+    <!-- Loading Bootstrap -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/css/bootstrap-theme.css" rel="stylesheet">
+
+    <!-- Loading UI Styles-->
+    <link href="assets/css/main.css" rel="stylesheet">
+    <link href="assets/css/media-query.css" rel="stylesheet">
+    <link rel="shortcut icon" href="img/favicon.ico">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+    <![endif]-->
+    <style>
+      .commentsWindowWrap .commentsList{
+        height: auto;
+      }
+      .sliderWrap .slider{
+        height: auto;
+      }
+      .barHorrible{
+        width:20% !important;
+      }
+      .barBad{
+        width:10% !important;
+      }
+      .barGood{
+        width:10% !important;
+      }
+      .barGreat{
+        width:40% !important;
+      }
+      .barAwesome{
+        width:80% !important;
+      }
+
+    .rateOptionsWrap .rateOption.rateHorrible,
+    .barHorrible{
+      background: #fc4a02;
+    }
+    .rateOptionsWrap .rateOption.rateBad,
+    .barBad{
+      background: #c17036
+    }
+    .rateOptionsWrap .rateOption.rateGood,
+    .barGood{
+      background: #938e5e;
+    }
+    .rateOptionsWrap .rateOption.rateGreat,
+    .barGreat{
+      background: #6ba882;
+    }
+    .rateOptionsWrap .rateOption.rateAwesome,
+    .barAwesome{
+      background: #4ebb9a;
+    }
+
+
+    </style>
+    
+  </head>
+  <body>
+        
+    <div class="top-container">
+    
+      <div class="row">
+      
+        <!-- LEFT COLUMN -->
+        <div class="col-sm-8">
+          <div class="playerWindowWrap ">
+
+            <!-- PRESENTATION SLIDER -->
+            <div class="winWrap sliderWrap">
+
+              <!-- SLIDER HEADER -->
+              <div class="slideHeader">
+                <span class="af-brand"></span>
+                <span class="rightText">Code Samples : agilityfeat.com/cs</span>
+                <div class="btnShow">View Comments</div>
+              </div>  
+              <!-- //SLIDER HEADER -->
+
+              <!-- SLIDER -->
+              <div class="slider">
+                <img src="assets/presentation/01.png"/>
+              </div>
+              <!-- SLIDER -->
+
+
+            </div>
+            <!-- //PRESENTATION SLIDER -->
+
+            <!-- SLIDE CONTROLS -->
+            <div class="sliderControls">
+              <div class="prevSlide"><span class="glyphicon glyphicon-chevron-left"></span><span class="textSpan">Prev</span></div> 
+              <div class="nextSlide"><span class="textSpan">Next</span><span class="glyphicon glyphicon-chevron-right"></div> 
+              <ul class="slideCount">
+                <li>1</li>
+                <li class="active">2</li>
+                <li>3</li>
+              </ul>
+            </div>
+            <!-- //SLIDE CONTROLS -->
+                  
+          </div>
+        </div>
+        <!-- //LEFT COLUMN -->
+
+        <!-- RIGHT COLUMN -->
+        <div class="col-sm-4 leftBorder">
+          <div class="winWrap commentsWindowWrap">
+            
+            <div class="commentHeader">
+              <span class="leftText">Comments</span>
+              <div class="btnShow">Current Slide</div>
+              <div class="actionsWrap">
+                
+                <!-- INITIAL CALL -->
+                <span class="initialCall">
+                  <span class="cameraCall"><span class="glyphicon glyphicon-facetime-video"></span></span>
+                  <span class="commentsCall">Edit</span>
+                </span>
+                <!-- //INITIAL CALL -->
+
+                <!-- DONE CALL -->
+                <span class="doneBtn">Done</span>
+                <!-- //DONE CALL -->
+              </div>
+            </div>
+
+            <!-- COMMENTS WRAP -->
+            <div class="commentsList">
+
+              <div class="commentItem">
+                <span class="commentText">Comment Comment Comment</span>
+                <span class="commentAuthor">Author</span>
+                <span class="cameraBtn"><span class="glyphicon glyphicon-facetime-video"></span></span>
+                <span class="deleteBtn"><span class="lineDel"></span></span>
+              </div>
+
+              <div class="commentItem">
+                <span class="commentText">Comment Comment Comment</span>
+                <span class="commentAuthor">Author</span>
+                <span class="cameraBtn"><span class="glyphicon glyphicon-facetime-video"></span></span>
+                <span class="deleteBtn"><span class="lineDel"></span></span>
+              </div>
+
+              <div class="commentItem">
+                <span class="commentText">Comment Comment Comment</span>
+                <span class="commentAuthor">Author</span>
+                <span class="cameraBtn"><span class="glyphicon glyphicon-facetime-video"></span></span>
+                <span class="deleteBtn"><span class="lineDel"></span></span>
+              </div>
+
+              <div class="commentItem">
+                <span class="commentText">Comment Comment Comment</span>
+                <span class="commentAuthor">Author</span>
+                <span class="cameraBtn"><span class="glyphicon glyphicon-facetime-video"></span></span>
+                <span class="deleteBtn"><span class="lineDel"></span></span>
+              </div>
+
+              <div class="commentItem">
+                <span class="commentText">Comment Comment Comment</span>
+                <span class="commentAuthor">Author</span>
+                <span class="cameraBtn"><span class="glyphicon glyphicon-facetime-video"></span></span>
+                <span class="deleteBtn"><span class="lineDel"></span></span>
+              </div>
+
+              <div class="commentItem">
+                <span class="commentText">Comment Comment Comment</span>
+                <span class="commentAuthor">Author</span>
+                <span class="cameraBtn"><span class="glyphicon glyphicon-facetime-video"></span></span>
+                <span class="deleteBtn"><span class="lineDel"></span></span>
+              </div>
+
+              <div class="commentItem">
+                <span class="commentText">Comment Comment Comment</span>
+                <span class="commentAuthor">Author</span>
+                <span class="cameraBtn"><span class="glyphicon glyphicon-facetime-video"></span></span>
+                <span class="deleteBtn"><span class="lineDel"></span></span>
+              </div>
+
+              <div class="commentItem">
+                <span class="commentText">Comment Comment Comment</span>
+                <span class="commentAuthor">Author</span>
+                <span class="cameraBtn"><span class="glyphicon glyphicon-facetime-video"></span></span>
+                <span class="deleteBtn"><span class="lineDel"></span></span>
+              </div>
+
+              <div class="commentItem">
+                <span class="commentText">Comment Comment Comment</span>
+                <span class="commentAuthor">Author</span>
+                <span class="cameraBtn"><span class="glyphicon glyphicon-facetime-video"></span></span>
+                <span class="deleteBtn"><span class="lineDel"></span></span>
+              </div>
+
+              <div class="commentItem">
+                <span class="commentText">Comment Comment Comment</span>
+                <span class="commentAuthor">Author</span>
+                <span class="cameraBtn"><span class="glyphicon glyphicon-facetime-video"></span></span>
+                <span class="deleteBtn"><span class="lineDel"></span></span>
+              </div>
+
+              <div class="commentItem">
+                <span class="commentText">Comment Comment Comment</span>
+                <span class="commentAuthor">Author</span>
+                <span class="cameraBtn"><span class="glyphicon glyphicon-facetime-video"></span></span>
+                <span class="deleteBtn"><span class="lineDel"></span></span>
+              </div>
+
+            </div>
+            <!-- //COMMENTS WRAP -->
+
+          </div>
+        </div>
+        <!-- //RIGHT COLUMN -->
+
+      </div>
+    
+    </div>
+    
+    <footer>
+      <div class="row">
+      
+        <!-- GRAPH COLUMN -->
+        <div class="col-sm-9 graphWrap">
+          <div class="row">
+            <div class="col-sm-10 col-sm-offset-1 linesWarp">
+              
+            </div>
+          </div>
+          <div class="row guideWarp">
+            <div class="col-sm-1 col-sm-offset-1">
+              <div class="ciclerMark"></div>
+            </div>
+            <div class="col-sm-1">
+              <div class="ciclerMark"></div>
+            </div>
+            <div class="col-sm-1">
+              <div class="ciclerMark"></div>
+            </div>
+            <div class="col-sm-1">
+              <div class="ciclerMark"></div>
+            </div>
+            <div class="col-sm-1">
+              <div class="ciclerMark"></div>
+            </div>
+            <div class="col-sm-1">
+              <div class="ciclerMark"></div>
+            </div>
+            <div class="col-sm-1">
+              <div class="ciclerMark"></div>
+            </div>
+            <div class="col-sm-1">
+              <div class="ciclerMark"></div>
+            </div>
+            <div class="col-sm-1">
+              <div class="ciclerMark"></div>
+            </div>
+            <div class="col-sm-1">
+              <div class="ciclerMark"></div>
+            </div>
+          </div>
+        </div>
+        <!-- //GRAPH COLUMN -->
+        <!-- GRAPH COLUMN -->
+        <div class="col-sm-3 colGraphWrap">
+
+          <div class="graphLabel">
+            <span class="name">AWESOME</span>
+            <div class="barGraphBg">
+              <div class="bar barAwesome"></div>
+              <span>10</span>
+            </div>
+          </div>
+
+          <div class="graphLabel">
+            <span class="name">GREAT</span>
+            <div class="barGraphBg">
+              <div class="bar barGreat"></div>
+              <span>10</span>
+            </div>
+          </div>
+
+          <div class="graphLabel">
+            <span class="name">GOOD</span>
+            <div class="barGraphBg">
+              <div class="bar barGood"></div>
+              <span>10</span>
+            </div>
+          </div>
+
+          <div class="graphLabel">
+            <span class="name">BAD</span>
+            <div class="barGraphBg">
+              <div class="bar barBad"></div>
+              <span>10</span>
+            </div>
+          </div>
+
+          <div class="graphLabel">
+            <span class="name">HORRIBLE</span>
+            <div class="barGraphBg">
+              <div class="bar barHorrible"></div>
+              <span>10</span>
+            </div>
+          </div>
+
+        </div>
+        <!-- //GRAPH COLUMN -->
+        <div class="col-sm-1 timeLapseWrap">
+          <span>Time Lapse</span>
+          <div class="timer">
+            00:00
+          </div>
+        </div>
+        <!-- //TIME LAPSED -->
+        
+        
+        <!-- //TIME LAPSED -->
+    </footer>
+    
+    <!-- Load JS here for greater good =============================-->
+    <script src="assets/js/jquery-2.0.3.min.js"></script>
+    <script src="assets/js/bootstrap.js"></script>
+    <script src="assets/js/application.js"></script>
+    <!--[if lt IE 8]>
+      <script src="js/icon-font-ie7.js"></script>
+      <script src="js/icon-font-ie7-24.js"></script>
+    <![endif]-->
+  </body>
+</html>
