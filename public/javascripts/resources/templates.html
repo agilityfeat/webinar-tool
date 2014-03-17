@@ -1,0 +1,385 @@
+<script type="text/template" id="channels_users_list">
+
+	<h4>
+	<%= _.filter(users, function(user){ return user.status === "join"; }).length %> 
+	users connected to 
+	<%= app.channelName %>
+	</h4>
+
+	<div class="list-group">
+
+		<a href="#" class="list-group-item you"><span class="glyphicon glyphicon-user"></span> You (<%= app.uuid %>)</a>
+
+		<% _.each(users, function(user){ %>
+			<% if(app.uuid !== user.uuid){%>
+				<a href="#" data-uuid="<%= user.uuid %>" data-username="" class="list-group-item">
+					<span class="glyphicon glyphicon-user"></span> 
+					<%= user.uuid %> - <%= (user.status === "join" ? "Online" : user.status) %> <span class="glyphicon glyphicon-facetime-video pull-right"></span>
+
+				</a>
+			<% } %>
+		<%});%>	
+		
+	</div>
+
+</script>
+
+<script type="text/template" id="connecting_template">
+
+	<div class="row">
+		<div class="form-group text-center connecting">
+			<img class="loading_logo" src="images/af-brand.png"/>
+			<h4>Connecting</h4>
+			<p><%= message %></p>
+		</div>
+	</div>		
+	
+
+</script>
+
+<script type="text/template" id="presentation_template">
+
+	<div class="row">
+
+		<!-- LEFT COLUMN -->
+		<div class="col-sm-8">
+
+			<div class="playerWindowWrap ">
+
+				<!-- PRESENTATION SLIDER -->
+				<div class="winWrap sliderWrap">
+
+					<!-- SLIDER HEADER -->
+					<div class="slideHeader">
+						<span class="af-brand"></span>
+						<div class="btnShow">View Comments</div>
+					</div>  
+					<!-- //SLIDER HEADER -->
+
+					<!-- SLIDER -->
+
+					<div id="presentation-carousel" class="slider carousel slide" data-interval='false' data-ride="carousel" >
+
+						
+						<div class="carousel-inner">
+
+							<% _.each(slides, function(slide, index){%>
+								<div class="item <%= index == 0 ? 'active' : ''%>">
+									<img src="<%=slide.pic_url %>">
+								</div>
+							<%});%>
+						</div>
+						
+					</div>
+					
+					<!-- SLIDER -->
+
+
+				</div>
+
+				
+					<div class="sliderControls">
+						
+						<!-- For now, just show these slide controls to everyone -->
+						<div class="prevSlide control" data-slide="prev">
+							<span class="glyphicon glyphicon-chevron-left"></span>
+							<span class="textSpan">Prev</span></div> 
+						
+						<div class="nextSlide control" data-slide="next">
+							<span class="textSpan">Next</span>
+							<span class="glyphicon glyphicon-chevron-right"></span>
+						</div> 
+						<!-- end of slide controls -->
+								
+						<ul class="slideCount">
+							<% _.each(slides, function(slide, index){%>
+								<li 
+								
+								class = "<%= index == 0 ? 'active' : ''%>" 
+
+								data-target="#presentation-carousel" data-slide-to="<%= index + 1%>"
+									
+								><%= index+ 1%></li>
+							<%});%>
+						</ul>
+					</div>
+				
+							
+			</div>
+		</div>
+		<!-- //LEFT COLUMN -->
+
+		<!-- RIGHT COLUMN -->
+		<div class="col-sm-4 leftBorder">
+			<div class="winWrap commentsWindowWrap">
+				
+				<div class="commentHeader">
+					<span class="leftText">Comments</span>
+					<div class="btnShow">Current Slide</div>
+					
+					<!-- Comments call code will go here later -->
+					
+				</div>
+
+				<!-- COMMENTS WRAP -->
+				<div class="commentsList" style="height: 690px;"></div>
+				<!-- //COMMENTS WRAP -->
+
+			</div>
+		</div>
+		<!-- //RIGHT COLUMN -->
+	</div>
+
+	<footer>
+		<div class="row">
+		
+			<!-- user.db.get("is_presenter") === "true" -->
+			<% if( true ){%>
+
+				
+				<div class="col-sm-9 graphWrap">
+					<div class="row">
+						<div id="linesWarp" class="col-sm-10 col-sm-offset-1 linesWarp">
+							
+						</div>
+					</div>
+					<div class="row guideWarp">
+						<div class="col-sm-1 col-sm-offset-1">
+							<div class="ciclerMark"></div>
+						</div>
+						<div class="col-sm-1">
+							<div class="ciclerMark"></div>
+						</div>
+						<div class="col-sm-1">
+							<div class="ciclerMark"></div>
+						</div>
+						<div class="col-sm-1">
+							<div class="ciclerMark"></div>
+						</div>
+						<div class="col-sm-1">
+							<div class="ciclerMark"></div>
+						</div>
+						<div class="col-sm-1">
+							<div class="ciclerMark"></div>
+						</div>
+						<div class="col-sm-1">
+							<div class="ciclerMark"></div>
+						</div>
+						<div class="col-sm-1">
+							<div class="ciclerMark"></div>
+						</div>
+						<div class="col-sm-1">
+							<div class="ciclerMark"></div>
+						</div>
+						<div class="col-sm-1">
+							<div class="ciclerMark"></div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="col-sm-3 colGraphWrap bargraph">
+
+
+					  <% _.each(slide_moods, function(mood){%>
+
+							<div class="graphLabel" data-mood-name="<%= mood.name %>">
+								<span class="name"><%= mood.name.toUpperCase() %></span>
+								<div class="barGraphBg">
+									<div class="bar bar<%= mood.name %>"></div>
+									<span class="mood_count"><%= mood.count %></span>
+								</div>
+							</div>
+
+					  <%});%>
+
+
+				</div>
+
+				<div class="col-sm-1 timeLapseWrap">
+					<span>Time Lapse</span>
+					<div class="timer" id="timerWrap">
+						<span class="hour">00</span>:<span class="minute">00</span>:<span class="second">00</span>
+					</div>
+				</div>				
+
+			<%} else {%>
+
+				<div class="col-sm-6">
+				  <div class="rateSlideWrap">
+				  	<div class="thanks_for_rating">Thanks for rating the presentation</div>
+					<span class="title pull-left">Rate current slide:</span>
+					<div class="rateOptionsWrap">
+					  <div class="floatClear"></div>
+
+					  <% _.each(slide_moods, function(mood){%>
+
+						  <span class="rateOption rate<%= mood.name %>" data-slide-mood="<%= mood.name %>">
+							<span class="inneCircle"></span>
+							<span class="label"><%= mood.name %></span>
+						  </span>
+
+					  <%});%>
+					 
+					</div>
+				  </div>
+				</div>
+
+				<div class="col-sm-6">
+				  <span class="showCommentBox">
+				  	Add Comments
+				  </span>
+				  <div class="commentSlideWrap">
+					<span>
+						You say:
+						<span class="glyphicon glyphicon-hand-up pull-right"></span>
+						<span class="raise_hand_label pull-right">Raise your hand: </span>
+					</span>
+					<textarea class="commentsHere" placeholder="Your comment"></textarea>
+					<button type="button" id="btn_send_message" class="btn btn-presentation">Submit</button>
+					<span class="hideCommentBox">Cancel</span>
+				  </div>
+				</div>				
+
+
+			<%}%>	
+			
+
+		</div>
+	</footer>
+
+
+</script>
+
+<script type="text/template" id="full_login_template">
+
+	<div class="row">
+		<div class="form-group login_container" id="login_container">
+		  <div class="header">
+			  <img src="images/af-brand.png"/>
+		  </div>	
+
+		<div class="body">
+        	<h4>Welcome</h4>
+			<div class="alert alert-danger" style="display:none;">
+				<strong>Ooops!</strong> <span id="message"></span>.
+			</div>				
+  			<label class="sr-only" for="message">Username</label>
+  			<input id="username" type="text" class="form-control" placeholder="USERNAME" autocomplete="off">
+  			
+  			<label class="sr-only" for="message">Password</label>
+  			<input id="password" type="password" class="form-control" placeholder="PASSWORD" autocomplete="off">
+		  </div>
+			<div class="footer">			
+				<button id="presenter_login" class="btn btn-login">Log In</button>
+			</div>
+		</div>	
+	</div>
+
+</script>
+
+<script type="text/template" id="login_template">
+
+	<div class="row">
+		<div class="form-group login_container" id="login_container">
+		  <div class="header">
+			  <img src="images/af-brand.png"/>
+		  </div>	
+
+		  <div class="body">
+        <h4>Welcome to our Agilityfeat <strong>Real Time</strong> Presentation</h4>
+        <div class="alert alert-danger" style="display:none;">
+				  <strong>Ooops!</strong> <span id="message"></span>.
+        </div>				
+  			<label class="sr-only" for="message">Name</label>
+  			<input id="username" type="text" class="form-control" placeholder="What's your name?" autocomplete="on">
+  			
+  			<label class="sr-only" for="message">Email</label>
+  			<input id="email" type="email" class="form-control" placeholder="Email" autocomplete="off">
+  			<div class="checkbox">
+  				<label>
+  					<input type="checkbox" id="subscribe" checked="checked"> <small>Subscribe to realtimeweb newsletter</small>
+  				</label>
+  			</div>
+
+		  </div>
+		  
+		  
+      <div class="footer">			
+			  <button id="login" class="btn btn-login">Show Presentation</button>
+      </div>
+		</div>	
+	</div>
+
+</script>
+
+<script type="text/template" id="channel_chat">
+	<div class="commentItem" data-message-id="<%= this_message.id %>">
+		<span class="commentText">
+			<% if(this_message.type === "HAND-UP"){%>
+				
+				<% if(this_message.is_your_message === true){%>
+					You have a question
+				<%} else {%>
+					<strong><%= this_message.from %></strong> has a question...
+				<%}%>
+
+				
+				<span class="glyphicon glyphicon-hand-up 
+					<% if(this_message.is_your_message !== true){%>
+						bouncing
+					<%}%>
+				pull-right"></span>
+			<%} else {%>
+				<%= this_message.message %>
+			<%}%>
+		</span>
+		<% if(this_message.type !== "HAND-UP"){%>
+			<span class="commentAuthor"><%= this_message.from %></span>
+		<%}%>
+		<span class="deleteBtn" data-message-id="<%= this_message.id %>"><span class="lineDel"></span></span>
+		<% if(this_message.can_webrtc){%>
+			<span class="cameraBtn" 
+				data-call-button="<%= this_message.from_uuid %>" 
+				data-user-username="<%= this_message.from %>" 
+				data-user="<%= this_message.from_uuid %>">
+				<span class="glyphicon glyphicon-facetime-video"></span>
+			</span>
+			<!--
+			<span class="screenShareBtn" 
+				data-call-button="<%= this_message.from_uuid %>" 
+				data-user-username="<%= this_message.from %>" 
+				data-user-share-screen="<%= this_message.from_uuid %>"
+			>
+				<span class="glyphicon glyphicon-new-window"></span>
+			</span>
+			-->
+		<%}%>
+	</div>
+</script>
+
+<script type="text/template" id="channel_messages">
+
+	<h4>Chat in channel: <%= app.channelName %><span class="glyphicon glyphicon-trash pull-right" id="empty_messages"></span></h4>
+
+	<div class="pull-left" id="messages_container">
+		<% _.each(messages, function(chat){ %>
+			<small>
+				<span class="glyphicon glyphicon-comment"></span>
+				<%= chat.from %>: <%= chat.message %>
+			</small>
+			<br>
+		<%});%>	
+		
+	</div>
+
+</script>
+
+<script type="text/template" id="user-item-template">
+	<li class="user" data-user="<%= uuid %>">
+		<span class="glyphicon glyphicon-user"></span> 
+		<span class="name"><%= is_you ? "You" : uuid %></span>
+		<% if(!is_you){%>
+			<a href="#" class="btn btn-success pull-right" data-call-button="<%= uuid %>" data-user="<%= uuid %>">Call</a>
+		<%}%>
+	</li>
+</script>
