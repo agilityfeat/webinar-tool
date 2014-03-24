@@ -25,6 +25,11 @@
 		channelMessages : [],
 
 		presentationVotes : [],
+		
+		credentials : {
+			publish_key 	: 'your publish key from the pub nub admin',
+			subscribe_key 	: 'your subscribe key from the pub nub admin'
+		},
 
 		init : function(){
 
