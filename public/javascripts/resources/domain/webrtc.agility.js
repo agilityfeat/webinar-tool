@@ -1,5 +1,3 @@
-//(function(w,d,$, _){
-
 	var agility_webrtc = {
 
 		uuid : null,
@@ -40,7 +38,6 @@
 			var self = agility_webrtc;
 			
 			isPresenter = (document.URL.indexOf("presenter") > 0);
-			console.log("isPresenter? " + isPresenter);
 			
 			agility_webrtc.currentUser = PUBNUB.init(agility_webrtc.credentials);	
 			
