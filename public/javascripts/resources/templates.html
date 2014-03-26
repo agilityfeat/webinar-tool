@@ -93,13 +93,9 @@
 								
 						<ul class="slideCount">
 							<% _.each(slides, function(slide, index){%>
-								<li 
-								
-								class = "<%= index == 0 ? 'active' : ''%>" 
-
-								data-target="#presentation-carousel" data-slide-to="<%= index + 1%>"
-									
-								><%= index+ 1%></li>
+								<li class = "<%=index=== 0?'active': ''%>" data-target="#presentation-carousel" data-slide-to="<%=index%>">
+									<%= index+ 1%>
+								</li>
 							<%});%>
 						</ul>
 					</div>
