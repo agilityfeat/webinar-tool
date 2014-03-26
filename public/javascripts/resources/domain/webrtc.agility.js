@@ -219,15 +219,6 @@
 				$(".slideCount li").removeClass("active");
 				$('.slideCount li[data-slide-to="' + slide_to  + '"]').addClass("active");
 
-				// if($(".slideCount li").length === ( slide_to )){
-				// 	slide_to = 0;
-				// 	$(".slideCount li").removeClass("active");
-				// 	$(".slideCount li:first").addClass("active");
-				// } else {
-				// 	$(".slideCount li").removeClass("active");
-				// 	$('.slideCount li[data-slide-to="' + slide_to  + '"]').addClass("active");
-				// }
-
 				$(".slider").carousel(slide_to);
 				
 				agility_webrtc.currentUser.publish({
