@@ -146,10 +146,6 @@
 		
 		changeSlide 		: function(options){
 			
-			//$(".slider").carousel(options.slide);
-
-			// console.log(JSON.stringify(options, null, 4))
-
 			if(options == null){
 				options = {slide: 1}
 			}
@@ -157,7 +153,7 @@
 			$(".slider").carousel(options.slide);
 
 			active_index = $(".carousel-inner .active").index();
-			
+
 			switch(options.slide){
 				case "prev":
 					active_index--;
@@ -176,7 +172,7 @@
 					}	
 				break;
 			}	
-	
+
 			$(".slideCount li").removeClass("active");
 			$($('.slideCount li')[active_index]).addClass("active");
 
