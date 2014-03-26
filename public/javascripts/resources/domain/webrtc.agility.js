@@ -26,14 +26,25 @@
 
 		presentationVotes : [],
 		
+		channelName : "agility_webrtc",
+		
 		credentials : {
-			publish_key 	: 'your publish key from the pub nub admin',
-			subscribe_key 	: 'your subscribe key from the pub nub admin'
+			publish_key 	: 'pub-c-24de4b19-9284-43ee-b600-5e7b38d31f5b',
+			subscribe_key 	: 'sub-c-9cc28534-8892-11e3-baad-02ee2ddab7fe'
 		},
 
 		init : function(){
 
 			var self = agility_webrtc;
+			
+			agility_webrtc.currentUser = PUBNUB.init(agility_webrtc.credentials);	
+			
+			agility_webrtc.currentUser.subscribe({
+				channel 	: agility_webrtc.channelName,
+				callback 	: agility_webrtc.onChannelListMessage
+			});
+			
+			self.setBinds();
 			
 			self.loadTemplates({
 				templates_url : "javascripts/resources/templates.html"
@@ -129,6 +140,126 @@
 			
 			return JSON.parse(window.localStorage.getItem(key));
 
+		},
+		
+		changeSlide 		: function(options){
+			
+			console.log(JSON.stringify(options, null, 4))
+
+			if(options == null){
+				options = {slide: 1}
+			}
+
+			$(".slider").carousel(options.slide);
+
+			active_index = $(".carousel-inner .active").index();
+			
+			switch(options.slide){
+				case "prev":
+					active_index--;
+				break;
+				case "next":
+					if(($(".slideCount li").length - 1) == active_index){
+						active_index = 1
+					} else {
+				 		active_index++;
+					}
+				break;
+				default:
+					if(typeof options.slide === 'number')
+					{
+						active_index = options.slide;
+					}	
+				break;
+			}	
+	
+			$(".slideCount li").removeClass("active");
+			$($('.slideCount li')[active_index -1]).addClass("active");
+
+			agility_webrtc.current_slide = active_index;
+		},
+		
+		onChannelListMessage : function(message){
+
+			var self = agility_webrtc;
+
+			switch(message.type){				
+				case "SLIDE":
+					agility_webrtc.changeSlide(message.options);
+				break;
+			}
+
+		},
+		
+		setBinds : function(){
+
+			$(document).on("click", ".control", function(e){
+			
+				e.preventDefault();
+				e.stopPropagation();
+
+				var is_next = $(this).is(".nextSlide");
+
+				var slide_to = $(".slideCount li.active").data("slide-to");
+
+				if(slide_to != null){
+					slide_to = (is_next ? (slide_to + 1) : (slide_to - 1));
+				} else {
+					slide_to = 1;
+				}
+				
+				slide_to = slide_to <= 0 ? ($(".slideCount li").length) : slide_to;
+
+
+				if($(".slideCount li").length === ( slide_to -1 )){
+					slide_to = 1;
+					$(".slideCount li").removeClass("active");
+					$(".slideCount li:first").addClass("active");
+				} else {
+					$(".slideCount li").removeClass("active");
+					$('.slideCount li[data-slide-to="' + slide_to + '"]').addClass("active");
+				}
+
+				$(".slider").carousel(slide_to);
+				
+				agility_webrtc.currentUser.publish({
+					channel: agility_webrtc.channelName,
+						message: {
+						type: "SLIDE",
+						options: { slide: slide_to }
+					}
+			    });
+				
+			});
+			
+			$(document).on("click",".slideCount li:not(.active)", function(e){
+				
+				e.preventDefault();
+				e.stopPropagation();
+
+				
+				/*eventually we should only allow presenters to do this*/
+				var el = $(e.target);
+				var slide_to = Number($(el).data("slide-to"));
+
+				$(".slideCount li").removeClass("active");
+				$('.slideCount li[data-slide-to="' + slide_to + '"]').addClass("active");
+
+				agility_webrtc.currentUser.publish({
+					channel: agility_webrtc.channelName,
+						message: {
+						type: "SLIDE",
+						options: {slide: slide_to}
+					}
+				});
+
+
+
+
+			});
+			
+			return this;
+		
 		}
 
 	}
