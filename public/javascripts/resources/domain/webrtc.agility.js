@@ -5,6 +5,8 @@
 		uuid : null,
 
 		currentUser : null,
+		
+		isPresenter : false,
 
 		slide_moods 	: [
 			{ name : "Horrible" , count : 0, value : 0 },
@@ -36,6 +38,9 @@
 		init : function(){
 
 			var self = agility_webrtc;
+			
+			isPresenter = (document.URL.indexOf("presenter") > 0);
+			console.log("isPresenter? " + isPresenter);
 			
 			agility_webrtc.currentUser = PUBNUB.init(agility_webrtc.credentials);	
 			

@@ -6,6 +6,10 @@ var routes = function (params) {
 			res.render('index.ejs');
 		})
 		
+	app.get('/presenter', function(req, res){
+			res.render('index.ejs');
+		})
+		
 	app.get('/add', function(req, res){
 			res.render('add.ejs');
 		})
