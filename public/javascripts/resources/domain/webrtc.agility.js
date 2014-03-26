@@ -250,20 +250,23 @@
 				e.stopPropagation();
 
 				
-				/*eventually we should only allow presenters to do this*/
-				var el = $(e.target);
-				var slide_to = Number($(el).data("slide-to"));
+				if( agility_webrtc.isPresenter ){
 
-				$(".slideCount li").removeClass("active");
-				$('.slideCount li[data-slide-to="' + slide_to + '"]').addClass("active");
+					var el = $(e.target);
+					var slide_to = Number($(el).data("slide-to"));
 
-				agility_webrtc.currentUser.publish({
-					channel: agility_webrtc.channelName,
-						message: {
-						type: "SLIDE",
-						options: {slide: slide_to}
-					}
-				});
+					$(".slideCount li").removeClass("active");
+					$('.slideCount li[data-slide-to="' + slide_to + '"]').addClass("active");
+
+					agility_webrtc.currentUser.publish({
+						channel: agility_webrtc.channelName,
+							message: {
+							type: "SLIDE",
+							options: {slide: slide_to}
+						}
+					});
+	
+				}
 
 
 
