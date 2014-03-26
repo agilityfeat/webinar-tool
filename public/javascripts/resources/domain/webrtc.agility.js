@@ -144,41 +144,41 @@
 		
 		changeSlide 		: function(options){
 			
-			$(".slider").carousel(options.slide);
+			//$(".slider").carousel(options.slide);
 
 			// console.log(JSON.stringify(options, null, 4))
 
-			// if(options == null){
-			// 	options = {slide: 1}
-			// }
+			if(options == null){
+				options = {slide: 1}
+			}
 
-			// $(".slider").carousel(options.slide);
+			$(".slider").carousel(options.slide);
 
-			// active_index = $(".carousel-inner .active").index();
+			active_index = $(".carousel-inner .active").index();
 			
-			// switch(options.slide){
-			// 	case "prev":
-			// 		active_index--;
-			// 	break;
-			// 	case "next":
-			// 		if(($(".slideCount li").length - 1) == active_index){
-			// 			active_index = 1
-			// 		} else {
-			// 	 		active_index++;
-			// 		}
-			// 	break;
-			// 	default:
-			// 		if(typeof options.slide === 'number')
-			// 		{
-			// 			active_index = options.slide;
-			// 		}	
-			// 	break;
-			// }	
+			switch(options.slide){
+				case "prev":
+					active_index--;
+				break;
+				case "next":
+					if(($(".slideCount li").length - 1) == active_index){
+						active_index = 1
+					} else {
+				 		active_index++;
+					}
+				break;
+				default:
+					if(typeof options.slide === 'number')
+					{
+						active_index = options.slide;
+					}	
+				break;
+			}	
 	
-			// $(".slideCount li").removeClass("active");
-			// $($('.slideCount li')[active_index -1]).addClass("active");
+			$(".slideCount li").removeClass("active");
+			$($('.slideCount li')[active_index]).addClass("active");
 
-			// agility_webrtc.current_slide = active_index;
+			agility_webrtc.current_slide = active_index;
 		},
 		
 		onChannelListMessage : function(message){
