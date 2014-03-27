@@ -29,8 +29,8 @@
 		channelName : "agility_webrtc",
 		
 		credentials : {
-			publish_key 	: 'pub-c-24de4b19-9284-43ee-b600-5e7b38d31f5b',
-			subscribe_key 	: 'sub-c-9cc28534-8892-11e3-baad-02ee2ddab7fe'
+			publish_key 	: 'your pub key',
+			subscribe_key 	: 'your sub key'
 		},
 
 		init : function(){
@@ -215,7 +215,7 @@
 				slide_to = slide_to === total_slides ? total_slides - 1 : slide_to;
 
 				slide_to = slide_to < 0 ? 0 : slide_to;
-
+				
 				$(".slideCount li").removeClass("active");
 				$('.slideCount li[data-slide-to="' + slide_to  + '"]').addClass("active");
 
@@ -236,12 +236,11 @@
 				e.preventDefault();
 				e.stopPropagation();
 
-				
-				if( agility_webrtc.isPresenter ){
+				if( isPresenter ){
 
 					var el = $(e.target);
 					var slide_to = Number($(el).data("slide-to"));
-
+					
 					$(".slideCount li").removeClass("active");
 					$('.slideCount li[data-slide-to="' + slide_to + '"]').addClass("active");
 
