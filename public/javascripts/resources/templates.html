@@ -116,7 +116,15 @@
 					<span class="leftText">Comments</span>
 					<div class="btnShow">Current Slide</div>
 					
-					<!-- Comments call code will go here later -->
+					<% if( isPresenter ){%>
+						<div class="actionsWrap">
+							<span class="initialCall">
+								<span class="cameraCall"><span class="glyphicon glyphicon-facetime-video"></span></span>
+								<span class="commentsCall">Edit</span>
+							</span>
+							<span class="doneBtn">Done</span>
+						</div>
+					<%}%>
 					
 				</div>
 

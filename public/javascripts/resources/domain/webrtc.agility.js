@@ -31,8 +31,8 @@
 		channelName : "agility_webrtc",
 		
 		credentials : {
-			publish_key 	: 'your pub key',
-			subscribe_key 	: 'your sub key'
+			publish_key 	: 'pub-c-24de4b19-9284-43ee-b600-5e7b38d31f5b',
+			subscribe_key 	: 'sub-c-9cc28534-8892-11e3-baad-02ee2ddab7fe'
 		},
 
 		init : function(){
@@ -57,6 +57,17 @@
 				self.showPresentationScreen();
 
 			})
+			
+			var UUID_from_storage = agility_webrtc.getFromStore("uuid");
+
+			if(UUID_from_storage){
+				agility_webrtc.uuid = UUID_from_storage.uuid;
+			} else {
+				agility_webrtc.uuid = PUBNUB.get_uuid();
+				agility_webrtc.setInStore({ "uuid" : agility_webrtc.uuid }, "uuid");
+			}
+			
+			console.log("I shall be known as uuid: " + agility_webrtc.uuid);
 
 
 		},
@@ -144,6 +155,25 @@
 			
 			return JSON.parse(window.localStorage.getItem(key));
 
+		},
+		
+		storeMessageAndDisplayMessages : function(message){
+
+			var self = agility_webrtc;
+			self.channelMessages.push(message);
+			console.log("Comment received: " + message.message);
+			self.render_prepend({
+				container 	: ".commentsList",
+				template 	: "#channel_chat",
+				data 		: {
+					messages 		: self.channelMessages,
+					this_message	: message,
+					app 			: self
+				}
+			})	
+			if($(".doneBtn").is(":visible")){
+				$(".deleteBtn").fadeIn();
+			}
 		},
 		
 		changeSlide 		: function(options){
@@ -281,7 +311,40 @@
 				case "SLIDE":
 					agility_webrtc.changeSlide(message.options);
 				break;
+				case "MESSAGE":
+					self.storeMessageAndDisplayMessages({
+						from		: message.user.name,
+						from_uuid 	: message.user.uuid,
+						message 	: message.text.replace( /[<>]/g, '' ),
+						id 			: message.id,
+						can_webrtc 	: false,
+						type 		: message.type,
+						is_your_message : (message.user.uuid === agility_webrtc.uuid) 	
+					});
+				break;
+				case "DELETE_MESSAGE":
+					$('.commentItem[data-message-id="' + message.id + '"]').animate({right:"-100%"}, 200, function(){
+						$(this).empty().remove();
+					})
+				break;
 			}
+
+		},
+		
+		setInStore 	: function(item, key){
+
+			if(item == null){
+				return false;
+			}
+
+			item = _.isString(item) ? item : JSON.stringify(item);
+			
+			window.localStorage.setItem(key, item);
+
+		},
+		getFromStore : function(key){
+			
+			return JSON.parse(window.localStorage.getItem(key));
 
 		},
 		
@@ -391,6 +454,109 @@
 					}
 				});
 
+
+			});
+			
+			$(document).on("click", "#btn_send_message", function(e){
+
+				var message = $(".commentsHere").val().trim();
+
+				if(message !== ""){
+
+					var username = "attendee";
+
+					agility_webrtc.currentUser.publish({
+						channel: agility_webrtc.channelName,
+						message : {
+							type 	: "MESSAGE",
+							text 	: message,
+							user 	: {
+								name 		: username,
+								uuid 		: agility_webrtc.uuid,
+								can_webrtc 	: agility_webrtc.can_webrtc
+							},
+							id 		: Date.now() + "-" + username.toLowerCase().replace(/ /g, '')
+						}
+					});
+					
+					console.log(agility_webrtc.uuid + " published comment " + message);
+
+					$(".commentsHere").val("");
+
+				} else {
+					$(".commentsHere").val("");
+				}
+
+			});
+			
+			$(document).on("click", ".showCommentBox", function(e){
+				$(this).fadeOut("fast");
+				$(".commentSlideWrap").fadeIn("fast");
+				$(".rateSlideWrap").fadeOut("fast");
+			});
+			
+			$(document).on("click", ".hideCommentBox", function(e){
+				$(this).fadeOut("fast");
+				$(".showCommentBox").fadeIn("fast");
+				$(".commentSlideWrap").fadeOut("fast");
+				$(".rateSlideWrap").fadeIn("fast");
+			});
+			
+			$(document).on("click", ".playerWindowWrap .btnShow", function(e){
+				$(".playerWindowWrap").fadeOut("fast");
+				$(".commentsWindowWrap").fadeIn("fast");
+			});
+
+			$(document).on("click", ".commentsWindowWrap .btnShow", function(e){
+
+				$(".commentsWindowWrap").fadeOut("fast");
+		    	$(".playerWindowWrap").fadeIn("fast");
+
+			});
+			
+			$(document).on("click", ".commentsCall", function(e){
+
+	  			$(".commentsCall").parents(".initialCall").fadeOut();
+    			$(".deleteBtn").fadeIn();
+				$(".cameraBtn,.screenShareBtn").fadeOut();
+				$(".doneBtn").removeClass('blue').fadeIn();
+				$(".commentItem").addClass('active');
+	
+			});
+			
+			$(document).on("click", ".doneBtn", function(e){
+
+				e.preventDefault();
+
+				$(".initialCall").fadeIn();
+				$(".deleteBtn, .cameraBtn, .doneBtn, .screenShareBtn").fadeOut();
+				$(".commentItem").removeClass('active');
+
+			});
+			
+			$(document).on("click", ".deleteBtn", function(e){
+
+				e.preventDefault();
+
+				var message_id = $(this).data("message-id");
+
+				$(this).parents('.commentItem').animate({right:"-100%"}, 200, function(){
+					
+					$(this).empty().remove();
+
+					if($('.commentItem').length === 0 && $(".doneBtn").is(":visible")){
+						$(".doneBtn").trigger("click");	
+					}
+
+					agility_webrtc.currentUser.publish({
+						channel: agility_webrtc.channelName,
+							message : {
+							type 	: "DELETE_MESSAGE",
+							id 		: message_id
+						}
+					});			
+
+				});
 
 			});
 			
