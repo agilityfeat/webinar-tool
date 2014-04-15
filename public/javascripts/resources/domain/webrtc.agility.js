@@ -68,7 +68,8 @@
 			}
 			
 			console.log("I shall be known as uuid: " + agility_webrtc.uuid);
-
+			
+			self.checkUserMedia();
 
 		},
 
@@ -92,6 +93,32 @@
 
 		},
 		
+		checkUserMedia : function(callback){
+				
+			agility_webrtc.can_webrtc = !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||navigator.mozGetUserMedia ||navigator.msGetUserMedia);	
+			console.log("This browser can use WebRTC: " + agility_webrtc.can_webrtc);
+			if(agility_webrtc.can_webrtc === true){
+
+				$.getScript( "javascripts/resources/vendor/webrtc-beta-pubnub.js" )
+					.done(function( script, textStatus ) {
+						if(typeof callback === 'function'){
+							callback();
+						}
+					})
+					.fail(function( jqxhr, settings, exception ) {
+						console.log("there was an error");
+					}
+				);
+
+			} else {
+				if(typeof callback === 'function'){
+					callback();
+				}
+			}
+
+			return this;
+								
+		},
 
 		showPresentationScreen : function(){
 
@@ -312,12 +339,13 @@
 					agility_webrtc.changeSlide(message.options);
 				break;
 				case "MESSAGE":
+					console.log('Comment received - user can_webrtc: ' + message.user.can_webrtc);
 					self.storeMessageAndDisplayMessages({
 						from		: message.user.name,
 						from_uuid 	: message.user.uuid,
 						message 	: message.text.replace( /[<>]/g, '' ),
 						id 			: message.id,
-						can_webrtc 	: false,
+						can_webrtc 	: message.user.can_webrtc,
 						type 		: message.type,
 						is_your_message : (message.user.uuid === agility_webrtc.uuid) 	
 					});
@@ -464,7 +492,7 @@
 				if(message !== ""){
 
 					var username = "attendee";
-
+					
 					agility_webrtc.currentUser.publish({
 						channel: agility_webrtc.channelName,
 						message : {
@@ -513,6 +541,19 @@
 		    	$(".playerWindowWrap").fadeIn("fast");
 
 			});
+			
+			$(document).on("click", ".cameraCall", function(e){
+
+				e.preventDefault();
+
+				$(".cameraCall").parents(".initialCall").fadeOut();
+				$(".deleteBtn").fadeOut();
+				$(".cameraBtn,.screenShareBtn").fadeIn();
+				$(".screenShareBtn").fadeIn();
+				$(".doneBtn").addClass('blue').fadeIn();
+				$(".commentItem").addClass('active');
+	
+			})
 			
 			$(document).on("click", ".commentsCall", function(e){
 
