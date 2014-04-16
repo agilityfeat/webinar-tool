@@ -34,6 +34,36 @@
 			publish_key 	: 'pub-c-24de4b19-9284-43ee-b600-5e7b38d31f5b',
 			subscribe_key 	: 'sub-c-9cc28534-8892-11e3-baad-02ee2ddab7fe'
 		},
+		
+		streams 	: [],
+		
+		video_constraint_default : "qvga",
+
+		video_constraints 	: [{
+			name : "qvga",//Low def
+			constraints : {
+				mandatory : {
+					maxWidth 	: 320,
+					maxHeight 	: 180
+				}
+			}
+		},{
+			name : "vga",//Regular
+			constraints : {
+				mandatory : {
+					maxWidth 	: 640,
+					maxHeight 	: 360
+				}
+			}
+		},{
+			name : "hd",//Regular
+			constraints : {
+				mandatory : {
+					maxWidth 	: 1280,
+					maxHeight 	: 720
+				}
+			}
+		}],
 
 		init : function(){
 
@@ -118,6 +148,115 @@
 
 			return this;
 								
+		},
+		
+		requestStream : function(options,callback, errorCallback){
+
+			var is_presenter = agility_webrtc.currentUser ? agility_webrtc.currentUser.db.get('is_presenter') === "true" : false;
+
+			var stream = _.find(agility_webrtc.streams, function(stream){ return stream.who === (is_presenter ? "presenter" : "mine"); });			
+
+			if(stream != null){
+
+				callback(stream.stream);
+
+			} else {
+
+				navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia ||navigator.mozGetUserMedia ||navigator.msGetUserMedia);	
+				
+				if(navigator.getUserMedia != null){
+
+					navigator.getUserMedia(options, function(stream) {
+					
+						if(typeof callback === 'function'){
+							callback(stream);
+						}
+
+					}, function(e) {
+
+						console.log('No access to getUserMedia!', e);
+
+						if(e.name === "PermissionDeniedError" && window.location.protocol !== "https:"){
+							alert("Must be behind a SSL...");
+						}
+						
+						if(typeof errorCallback === 'function'){
+							errorCallback(e);
+						}
+
+					});					
+
+				}
+
+			}
+
+		},
+
+		receiveStream : function(options){
+
+			agility_webrtc.currentCallUUID = options.uuid;
+
+			agility_webrtc.currentUser.subscribe({
+				user: options.uuid,
+				stream: function(bad, event) {
+					
+					var remote_stream = _.find(agility_webrtc.streams, function(stream){
+						return stream.who === "you";
+					})
+
+					if(remote_stream){
+						remote_stream.stream = event.stream;
+					} else {
+						agility_webrtc.streams.push({ who : "you", stream : event.stream });
+					}
+
+					agility_webrtc.showStream({ who : "you" , container : '#broadcasted_video'});
+					
+				},
+				disconnect: function(uuid, pc) {
+					//The caller disconnected the call...
+				}
+			});	
+
+		},
+		
+		callPerson 			: function(options){
+
+			agility_webrtc.currentCallUUID = options.uuid;
+
+			var modalCalling = $("#calling-modal");
+
+			var message = options.sharing_screen ? ("Sharing screen with " + options.username + "...") : "Calling " + options.username + "...";
+
+			modalCalling.find('.calling').text(message);
+
+			modalCalling.find(".btn-danger").data("calling-user", options.uuid);
+
+			modalCalling.find(".btn-danger").data("calling-user", options.uuid);
+
+			$(modalCalling).data("screen_sharing",options.sharing_screen);
+
+			modalCalling.modal('show');
+
+			$("#ringer")[0].play();
+
+			modalCalling.removeClass("hide");
+
+			agility_webrtc.currentUser.publish({
+				channel: 'call',
+				message: {
+					caller 	: {
+						uuid 		: agility_webrtc.uuid,
+						username 	: agility_webrtc.currentUser.db.get("username")
+					},
+					callee 	: { 
+						uuid 		: options.uuid,
+						username 	: options.username
+					},
+					action 	: (options.sharing_screen ? "screen_sharing" : "calling")
+				}
+			});
+
 		},
 
 		showPresentationScreen : function(){
@@ -548,8 +687,7 @@
 
 				$(".cameraCall").parents(".initialCall").fadeOut();
 				$(".deleteBtn").fadeOut();
-				$(".cameraBtn,.screenShareBtn").fadeIn();
-				$(".screenShareBtn").fadeIn();
+				$(".cameraBtn").fadeIn();
 				$(".doneBtn").addClass('blue').fadeIn();
 				$(".commentItem").addClass('active');
 	
@@ -559,7 +697,7 @@
 
 	  			$(".commentsCall").parents(".initialCall").fadeOut();
     			$(".deleteBtn").fadeIn();
-				$(".cameraBtn,.screenShareBtn").fadeOut();
+				$(".cameraBtn").fadeOut();
 				$(".doneBtn").removeClass('blue').fadeIn();
 				$(".commentItem").addClass('active');
 	
@@ -598,6 +736,64 @@
 					});			
 
 				});
+
+			});
+			
+			$(document).on("click", "[data-user]", function(e){
+
+				e.preventDefault();
+
+				e.stopPropagation();
+
+				$(".doneBtn").trigger("click");
+
+				$(this).parents(".commentItem").find(".glyphicon-hand-up").removeClass("bouncing").hide();
+
+				var name;
+
+				var callingTo = {
+					uuid 		: $(this).data('user'),
+					username 	: $(this).data('user-username')
+				}
+
+
+				if(agility_webrtc.currentUser.db.get('is_presenter') === "true"){
+
+					agility_webrtc.callPerson(callingTo);
+
+				} else {
+
+					var video_constraints = _.find(agility_webrtc.video_constraints, function(video_constraint){
+						return video_constraint.name === agility_webrtc.video_constraint_default;
+					}).constraints;						
+
+					agility_webrtc.requestStream({
+						video : video_constraints,
+						audio : true
+					}, function(stream){
+
+						var my_stream = _.find(agility_webrtc.streams, function(stream){
+							return stream.who === "mine";
+						})
+
+						if(my_stream){
+							//Stream exists in the streams array, let's update the reference...
+							my_stream.stream = stream;
+						} else {
+							agility_webrtc.streams.push({ who : "mine", stream : stream });
+						}
+
+						agility_webrtc.callPerson(callingTo);
+
+					}, function(){
+
+						alert("To call someone please allow access to audio and video...");
+
+					})
+
+				}
+
+
 
 			});
 			
