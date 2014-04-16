@@ -225,16 +225,12 @@
 			agility_webrtc.currentCallUUID = options.uuid;
 
 			var modalCalling = $("#calling-modal");
-
-			var message = options.sharing_screen ? ("Sharing screen with " + options.username + "...") : "Calling " + options.username + "...";
+			
+			var message = "Calling " + options.username + "...";
 
 			modalCalling.find('.calling').text(message);
 
 			modalCalling.find(".btn-danger").data("calling-user", options.uuid);
-
-			modalCalling.find(".btn-danger").data("calling-user", options.uuid);
-
-			$(modalCalling).data("screen_sharing",options.sharing_screen);
 
 			modalCalling.modal('show');
 
@@ -253,7 +249,7 @@
 						uuid 		: options.uuid,
 						username 	: options.username
 					},
-					action 	: (options.sharing_screen ? "screen_sharing" : "calling")
+					action 	: "calling"
 				}
 			});
 
