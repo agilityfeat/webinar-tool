@@ -70,14 +70,7 @@
 			var self = agility_webrtc;
 			
 			isPresenter = (document.URL.indexOf("presenter") > 0);
-			
-			agility_webrtc.currentUser = PUBNUB.init(agility_webrtc.credentials);	
-			
-			agility_webrtc.currentUser.subscribe({
-				channel 	: agility_webrtc.channelName,
-				callback 	: agility_webrtc.onChannelListMessage
-			});
-			
+
 			self.setBinds();
 			
 			self.loadTemplates({
@@ -88,23 +81,47 @@
 
 			})
 			
-			var UUID_from_storage = agility_webrtc.getFromStore("uuid");
+			//var UUID_from_storage = agility_webrtc.getFromStore("uuid");
 
-			if(UUID_from_storage){
-				agility_webrtc.uuid = UUID_from_storage.uuid;
-			} else {
-				agility_webrtc.uuid = PUBNUB.get_uuid();
-				agility_webrtc.setInStore({ "uuid" : agility_webrtc.uuid }, "uuid");
-			}
+			// if(UUID_from_storage){
+			// 	agility_webrtc.uuid = UUID_from_storage.uuid;
+			// } else {
+			// 	agility_webrtc.uuid = PUBNUB.get_uuid();
+			// 	agility_webrtc.setInStore({ "uuid" : agility_webrtc.uuid }, "uuid");
+			// }
+
+			self.checkUserMedia(function(){
+
+
+				agility_webrtc.credentials.uuid = PUBNUB.uuid();
+
+				agility_webrtc.currentUser = PUBNUB.init(agility_webrtc.credentials);	
+				
+				agility_webrtc.uuid = agility_webrtc.currentUser.UUID;
 			
-			console.log("I shall be known as uuid: " + agility_webrtc.uuid);
-			
-			self.checkUserMedia();
-			
-			if(agility_webrtc.can_webrtc){	
+				console.log("I shall be known as uuid: " + agility_webrtc.uuid);
+
+				agility_webrtc.currentUser.subscribe({
+					channel 	: agility_webrtc.channelName,
+					callback 	: agility_webrtc.onChannelListMessage
+				});
+				
 				agility_webrtc.connectToCallChannel();
+				
 				agility_webrtc.connectToAnswerChannel();
-			}
+
+				if(agility_webrtc.currentUser.onNewConnection){
+
+					agility_webrtc.currentUser.onNewConnection(function(uuid){ 
+						console.info("onNewConnection triggered...");
+						agility_webrtc.publishStream({ uuid : uuid }); 
+					});
+
+				}					
+
+
+			});
+
 
 		},
 
@@ -221,6 +238,7 @@
 
 			console.log('Publishing call channel message. Caller: ' + agility_webrtc.uuid + ' Callee: ' + options.uuid);
 
+
 			agility_webrtc.currentUser.publish({
 				channel: 'call',
 				message: {
@@ -286,6 +304,7 @@
 		},
 		
 		onCallStarted 		: function(){
+		
 			console.log('onCallStarted!');
 			$('#video-controls').show();
 			$('#video-controls #time').html("00:00");
@@ -296,6 +315,8 @@
 		},
 		
 		answerCall 		: function(from){
+
+			console.info("Answering call from " + from);
 
 			var video_constraints = _.find(agility_webrtc.video_constraints, function(video_constraint){
 				return video_constraint.name === agility_webrtc.video_constraint_default;
@@ -316,8 +337,10 @@
 					my_stream.stream = stream;
 				} else {
 					agility_webrtc.streams.push({ who : "mine", stream : stream });
-				}			 		
+				}	
+
 				console.log('I will publish my stream to the caller ' + agility_webrtc.currentCallUUID);
+			 	
 			 	agility_webrtc.publishStream({ uuid : from  });
 
 				var modalAnswer = $("#answer-modal");
@@ -326,7 +349,7 @@
 				
 				$("#ringer")[0].pause()
 
-				console.log('Next I publish my answer to the caller');
+				console.log('Next I publish my answer to the caller ' + agility_webrtc.incomingCallFrom);
 				agility_webrtc.currentUser.publish({
 					channel: 'answer',
 					message: {
@@ -358,6 +381,8 @@
 				agility_webrtc.incomingCallFrom = options.uuid;
 
 				agility_webrtc.showStream({ who : "mine" , container : '#me'});
+
+				console.log("Will publish my stream to " + options.uuid + " | Stream : " + stream);
 
 				agility_webrtc.currentUser.publish({ 
 					user: options.uuid, 
@@ -403,7 +428,7 @@
 			if(stream == null){
 
 				var video_constraints = _.find(agility_webrtc.video_constraints, function(video_constraint){
-					return video_constraint.name === agility_webrtc.video_constraint_default;
+				 	return video_constraint.name === agility_webrtc.video_constraint_default;
 				}).constraints;
 
 				agility_webrtc.requestStream({
@@ -460,12 +485,12 @@
 				callback: function(data) {
 					
 					if (data.caller.uuid === agility_webrtc.uuid) {
-						console.log('received an answer message from ' + data.callee.uuid);
+						
+						console.log('Received an answer message from ' + data.callee.uuid);
+						
 						agility_webrtc.publishStream({ uuid :  data.callee.uuid });
 
-						var modalCalling = $("#calling-modal");
-
-						modalCalling.modal('hide');
+						$("#calling-modal").modal('hide');
 
 						$("#ringer")[0].pause();
 
@@ -734,6 +759,95 @@
 			return JSON.parse(window.localStorage.getItem(key));
 
 		},
+
+		hideConference : function(){
+
+			$('#conference-modal').modal('hide');
+
+		},
+
+		onEndCall 		: function(){
+
+			agility_webrtc.hideConference();
+			agility_webrtc.hideControls();
+			agility_webrtc.stopTimer();
+			agility_webrtc.stopStream();
+
+
+		},	
+
+		setCurrentCallTime : function(time){
+
+			$('#video-controls #time').html(time);
+
+		},
+
+
+		stopStream 		: function(){
+
+			/*
+				
+				Should not stop the stream if is the presenter...
+
+			*/
+
+			if(agility_webrtc.currentUser.db.get('is_presenter') !== "true"){
+
+				var my_stream = _.find(agility_webrtc.streams, function(stream){
+					return stream.who === "mine";
+				})
+
+				if(my_stream){
+					my_stream.stream.stop();
+					agility_webrtc.streams = _.reject(agility_webrtc.streams, function(stream){
+						return stream.who === "mine";
+					})
+				}	
+
+			}
+
+		},		
+
+		incrementTimer 		: function(){
+
+
+			var minutes, seconds;
+			agility_webrtc.currentCallTime += 1;
+			var minutes = Math.floor(agility_webrtc.currentCallTime / 60);
+			var seconds = agility_webrtc.currentCallTime % 60;
+			if (minutes.toString().length === 1) {
+				minutes = "0" + minutes;
+			}
+			if (seconds.toString().length === 1) {
+				seconds = "0" + seconds;
+			}
+			agility_webrtc.setCurrentCallTime("" + minutes + ":" + seconds);
+
+		},
+
+		stopTimer 			: function(){
+
+			clearInterval(agility_webrtc.timeInterval);
+
+		},			
+
+		hideControls : function(){
+
+			$('#video-controls').hide();
+
+		},
+
+		hangupCall : function(){
+
+			agility_webrtc.currentUser.closeConnection(agility_webrtc.currentCallUUID, function(){
+
+				//Connection with the other person was closed...
+				agility_webrtc.onEndCall();
+
+			})
+
+
+		},		
 		
 		setBinds : function(){
 
@@ -773,7 +887,7 @@
 					}
 			    });
 				
-			}),
+			})
 			
 			$(document).on("click",".slideCount li:not(.active)", function(e){
 				
@@ -797,10 +911,6 @@
 					});
 	
 				}
-
-
-
-
 			}),
 			
 			$(document).on("click", ".rateOption", function(e){
@@ -1023,6 +1133,14 @@
 				e.stopPropagation();
 				console.log('I have clicked to answer the call');
 				agility_webrtc.answerCall(agility_webrtc.incomingCallFrom);
+
+			})
+
+			$(document).on("click", "#hangup", function(e){
+
+				e.preventDefault();
+
+				agility_webrtc.hangupCall();
 
 			})
 			
