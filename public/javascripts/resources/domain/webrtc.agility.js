@@ -31,8 +31,8 @@
 		channelName : "agility_webrtc",
 		
 		credentials : {
-			publish_key 	: 'pub-c-24de4b19-9284-43ee-b600-5e7b38d31f5b',
-			subscribe_key 	: 'sub-c-9cc28534-8892-11e3-baad-02ee2ddab7fe'
+			publish_key 	: 'PUB KEY HERE',
+			subscribe_key 	: 'SUB KEY HERE'
 		},
 		
 		streams 	: [],
