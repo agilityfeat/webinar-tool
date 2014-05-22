@@ -23,7 +23,7 @@
   }
 
   // Global info logging
-  var isDebug = true;
+  var isDebug = false;
   function debug() {
     if (isDebug === true) {
       console['log'].apply(console, arguments);

@@ -31,8 +31,8 @@
 		channelName : "agility_webrtc",
 		
 		credentials : {
-			publish_key 	: 'PUB KEY HERE',
-			subscribe_key 	: 'SUB KEY HERE'
+			publish_key 	: 'YOUR PUB KEY HERE',
+			subscribe_key 	: 'YOUR SUB KEY HERE'
 		},
 		
 		streams 	: [],
@@ -286,7 +286,7 @@
 		},
 		
 		onIncomingCall 		: function(options){
-
+			console.log("Incoming call...");
 			var modalAnswer = $("#answer-modal");
 
 			modalAnswer.removeClass("hide");		
@@ -767,7 +767,7 @@
 		},
 
 		onEndCall 		: function(){
-
+			console.log("onEndCall");
 			agility_webrtc.hideConference();
 			agility_webrtc.hideControls();
 			agility_webrtc.stopTimer();
@@ -790,6 +790,8 @@
 				Should not stop the stream if is the presenter...
 
 			*/
+
+			console.log("stopping stream...");
 
 			if(agility_webrtc.currentUser.db.get('is_presenter') !== "true"){
 
@@ -838,7 +840,7 @@
 		},
 
 		hangupCall : function(){
-
+			console.log("hangupCall");
 			agility_webrtc.currentUser.closeConnection(agility_webrtc.currentCallUUID, function(){
 
 				//Connection with the other person was closed...
@@ -1012,7 +1014,7 @@
 			});
 			
 			$(document).on("click", ".cameraCall", function(e){
-
+				console.log("cameraCall click event");
 				e.preventDefault();
 
 				$(".cameraCall").parents(".initialCall").fadeOut();
@@ -1110,6 +1112,7 @@
 							//Stream exists in the streams array, let's update the reference...
 							my_stream.stream = stream;
 						} else {
+							console.log("pushing stream 'mine'");
 							agility_webrtc.streams.push({ who : "mine", stream : stream });
 						}
 
@@ -1137,7 +1140,7 @@
 			})
 
 			$(document).on("click", "#hangup", function(e){
-
+				console.log("Clicked hangup...");
 				e.preventDefault();
 
 				agility_webrtc.hangupCall();
