@@ -106,7 +106,7 @@ h6,
 }
 @media 
 (-webkit-min-device-pixel-ratio: 2), 
-(min-resolution: 192dpi) { 
+(min-resolution: 192dppx) { 
   .sliderWrap .slideHeader .af-brand{
     background-image:  url('../images/af-brand@2x.png');
     background-size: 120px 40px;

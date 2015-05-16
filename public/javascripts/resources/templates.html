@@ -78,9 +78,8 @@
 				</div>
 
 				
-					<div class="sliderControls">
-						
-						<!-- For now, just show these slide controls to everyone -->
+				<div class="sliderControls">
+					<% if(isPresenter){%>
 						<div class="prevSlide control" data-slide="prev">
 							<span class="glyphicon glyphicon-chevron-left"></span>
 							<span class="textSpan">Prev</span></div> 
@@ -89,20 +88,20 @@
 							<span class="textSpan">Next</span>
 							<span class="glyphicon glyphicon-chevron-right"></span>
 						</div> 
-						<!-- end of slide controls -->
-								
-						<ul class="slideCount">
-							<% _.each(slides, function(slide, index){%>
-								<li 
-								
-								class = "<%= index == 0 ? 'active' : ''%>" 
+					<%}%>		
+					<ul class="slideCount">
+						<% _.each(slides, function(slide, index){%>
+							<li 
+							
+							class = "<%= index == 0 ? 'active' : ''%>" 
 
-								data-target="#presentation-carousel" data-slide-to="<%= index + 1%>"
-									
-								><%= index+ 1%></li>
-							<%});%>
-						</ul>
-					</div>
+							<% if(isPresenter){%>
+								data-target="#presentation-carousel" data-slide-to="<%= index %>"
+							<%}%>	
+							><%= index+ 1%></li>
+						<%});%>
+					</ul>
+				</div>
 				
 							
 			</div>
@@ -117,7 +116,15 @@
 					<span class="leftText">Comments</span>
 					<div class="btnShow">Current Slide</div>
 					
-					<!-- Comments call code will go here later -->
+					<% if( isPresenter ){%>
+						<div class="actionsWrap">
+							<span class="initialCall">
+								<span class="cameraCall"><span class="glyphicon glyphicon-facetime-video"></span></span>
+								<span class="commentsCall">Edit</span>
+							</span>
+							<span class="doneBtn">Done</span>
+						</div>
+					<%}%>
 					
 				</div>
 
@@ -133,8 +140,7 @@
 	<footer>
 		<div class="row">
 		
-			<!-- user.db.get("is_presenter") === "true" -->
-			<% if( true ){%>
+			<% if( isPresenter ){%>
 
 				
 				<div class="col-sm-9 graphWrap">
@@ -231,8 +237,6 @@
 				  <div class="commentSlideWrap">
 					<span>
 						You say:
-						<span class="glyphicon glyphicon-hand-up pull-right"></span>
-						<span class="raise_hand_label pull-right">Raise your hand: </span>
 					</span>
 					<textarea class="commentsHere" placeholder="Your comment"></textarea>
 					<button type="button" id="btn_send_message" class="btn btn-presentation">Submit</button>
@@ -250,92 +254,11 @@
 
 </script>
 
-<script type="text/template" id="full_login_template">
-
-	<div class="row">
-		<div class="form-group login_container" id="login_container">
-		  <div class="header">
-			  <img src="images/af-brand.png"/>
-		  </div>	
-
-		<div class="body">
-        	<h4>Welcome</h4>
-			<div class="alert alert-danger" style="display:none;">
-				<strong>Ooops!</strong> <span id="message"></span>.
-			</div>				
-  			<label class="sr-only" for="message">Username</label>
-  			<input id="username" type="text" class="form-control" placeholder="USERNAME" autocomplete="off">
-  			
-  			<label class="sr-only" for="message">Password</label>
-  			<input id="password" type="password" class="form-control" placeholder="PASSWORD" autocomplete="off">
-		  </div>
-			<div class="footer">			
-				<button id="presenter_login" class="btn btn-login">Log In</button>
-			</div>
-		</div>	
-	</div>
-
-</script>
-
-<script type="text/template" id="login_template">
-
-	<div class="row">
-		<div class="form-group login_container" id="login_container">
-		  <div class="header">
-			  <img src="images/af-brand.png"/>
-		  </div>	
-
-		  <div class="body">
-        <h4>Welcome to our Agilityfeat <strong>Real Time</strong> Presentation</h4>
-        <div class="alert alert-danger" style="display:none;">
-				  <strong>Ooops!</strong> <span id="message"></span>.
-        </div>				
-  			<label class="sr-only" for="message">Name</label>
-  			<input id="username" type="text" class="form-control" placeholder="What's your name?" autocomplete="on">
-  			
-  			<label class="sr-only" for="message">Email</label>
-  			<input id="email" type="email" class="form-control" placeholder="Email" autocomplete="off">
-  			<div class="checkbox">
-  				<label>
-  					<input type="checkbox" id="subscribe" checked="checked"> <small>Subscribe to realtimeweb newsletter</small>
-  				</label>
-  			</div>
-
-		  </div>
-		  
-		  
-      <div class="footer">			
-			  <button id="login" class="btn btn-login">Show Presentation</button>
-      </div>
-		</div>	
-	</div>
-
-</script>
-
 <script type="text/template" id="channel_chat">
 	<div class="commentItem" data-message-id="<%= this_message.id %>">
 		<span class="commentText">
-			<% if(this_message.type === "HAND-UP"){%>
-				
-				<% if(this_message.is_your_message === true){%>
-					You have a question
-				<%} else {%>
-					<strong><%= this_message.from %></strong> has a question...
-				<%}%>
-
-				
-				<span class="glyphicon glyphicon-hand-up 
-					<% if(this_message.is_your_message !== true){%>
-						bouncing
-					<%}%>
-				pull-right"></span>
-			<%} else {%>
-				<%= this_message.message %>
-			<%}%>
+			<%= this_message.message %>
 		</span>
-		<% if(this_message.type !== "HAND-UP"){%>
-			<span class="commentAuthor"><%= this_message.from %></span>
-		<%}%>
 		<span class="deleteBtn" data-message-id="<%= this_message.id %>"><span class="lineDel"></span></span>
 		<% if(this_message.can_webrtc){%>
 			<span class="cameraBtn" 
@@ -344,15 +267,6 @@
 				data-user="<%= this_message.from_uuid %>">
 				<span class="glyphicon glyphicon-facetime-video"></span>
 			</span>
-			<!--
-			<span class="screenShareBtn" 
-				data-call-button="<%= this_message.from_uuid %>" 
-				data-user-username="<%= this_message.from %>" 
-				data-user-share-screen="<%= this_message.from_uuid %>"
-			>
-				<span class="glyphicon glyphicon-new-window"></span>
-			</span>
-			-->
 		<%}%>
 	</div>
 </script>

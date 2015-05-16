@@ -33,6 +33,63 @@
 			<!--RENDERED CONTENT HERE -->
 		</div>
 		
+		<audio loop id="ringer">
+			<source src="medias/ring.mp3" type="audio/mpeg">
+		</audio>		
+
+		<div id="answer-modal" class="modal hide">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="myModalLabel"><img src="images/phone.svg" class="shake"/> Incoming Call</h3>
+			</div>
+			<div class="modal-body">
+				<p class="caller">(User) is calling...</p>
+			</div>
+			<div class="modal-footer">
+				<a href="#" class="btn btn-danger" id="ignoreCall">Hang Up</a>
+				<button class="btn btn-success" id="answer">Answer</button>
+			</div>
+		</div>
+
+		<div id="calling-modal" class="modal hide">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="myModalLabel"><img src="images/phone.svg" class="shake"/> Outgoing Call</h3>
+			</div>
+			<div class="modal-body">
+				<p class="calling">Calling (User)...</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Cancel</button>
+			</div>
+		</div>	
+
+		<div id="conference-modal" class="modal hide">
+			<div class="modal-header">
+				<h3 id="myModalLabel"><img class="phone_icon" src="images/phone.svg"/> Person to Person Call</h3>
+			</div>
+			<div class="modal-body">
+
+			<div class="streaming_container pull-left">
+				
+				<img class="audio_controls" id="your_audio_mute" src="/images/mute.svg"/>
+				<img class="audio_controls" id="your_audio_unmute" src="/images/unmute.svg"/>
+				<video autoplay id="you"></video>
+				<video autoplay id="me" muted></video>
+				
+			</div>	
+						
+			</div>
+			<div class="modal-footer">
+
+				<div class="span12" id="video-controls" style="display: none;">
+					<a href="#" class="btn btn-danger" id="hangup">Hang Up</a>
+					<span id="time">00:00</span>
+				</div>
+				
+			</div>
+		</div>
+		
 		<script src="javascripts/resources/vendor/jquery.min.js"></script>		
 		<script src="javascripts/resources/vendor/easing.js"></script>
 		<script src="javascripts/resources/vendor/underscore-1.5.2.js"></script>
@@ -41,6 +98,7 @@
 		<script src="javascripts/resources/vendor/jquery.tipsy.js"></script>
 		<script src="javascripts/resources/vendor/line_graph.js"></script>
 		<script src="javascripts/resources/vendor/timer.js"></script>
+		<script src="javascripts/resources/vendor/pubnub-3.5.4.js"></script>
 		<script src="javascripts/resources/domain/webrtc.agility.js"></script>
 
 </body>

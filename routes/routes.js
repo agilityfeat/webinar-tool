@@ -5,6 +5,14 @@ var routes = function (params) {
 	app.get('/', function(req, res){
 			res.render('index.ejs');
 		})
+		
+	app.get('/presenter', function(req, res){
+			res.render('index.ejs');
+		})
+		
+	app.get('/add', function(req, res){
+			res.render('add.ejs');
+		})
 
 }
 

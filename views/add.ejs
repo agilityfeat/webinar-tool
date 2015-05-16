@@ -1,0 +1,70 @@
+<!doctype html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Super Simple Pub/Sub Demo</title>
+		<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap-theme.css" />
+	</head>
+	
+	<body>
+	
+		<script src="//cdn.pubnub.com/pubnub.js"></script>
+		<script>
+	     var pubnub = PUBNUB.init({
+	         publish_key   : 'your pub key',
+	         subscribe_key : 'your sub key'
+	     });
+		 
+	     pubnub.subscribe({
+	         channel : "add_example",
+	         message : function(m){ 
+			 	m = JSON.parse(m);
+			 	console.log("received message: " + m);
+				document.getElementById(m.message_type).value = m.message;
+			},
+	     });
+		 
+	     function publish(m) {
+		 	 console.log("sending message: " + m);
+	         pubnub.publish({
+	             channel : "add_example",
+	             message : m
+	         });
+	     };
+		 
+		 function add() {
+		 	return parseFloat(document.getElementById('operand1').value) + parseFloat(document.getElementById('operand2').value);
+		 };
+		 
+		 function create_message(msg, type) {
+		 	return '{ "message_type":"' + type + '", "message":"' + msg + '" }';
+		 };
+		 </script>
+		 
+		 <div class="container" style="margin-top: 10px;">
+		 	<div class="row">
+		 		<div class="span6">
+		             <form>
+		                 <div class="controls controls-row">
+		                     <input id="operand1" type="text" class="span2" onchange="publish(create_message(document.getElementById('operand1').value,'operand1'))">
+							 
+							  + 
+							 
+							 <input id="operand2" type="text" class="span2"  onchange="publish(create_message(document.getElementById('operand2').value,'operand2'))"> 
+							 <button id="sendMessage" type="button" value="Add and Send!" onclick="publish(create_message(add(),'answer'))" class="btn btn-primary input-medium">equals </button> 
+							 
+							 <input id="answer" type="text" class="span2" placeholder="?">
+		                 </div>
+		                 <div class="controls">
+						 	 
+		                 </div>
+		             </form>
+		         </div>
+		 	</div>
+		 </div>
+
+</body>
+
+</html>
