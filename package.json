@@ -1,10 +1,23 @@
 {
   "name": "webinar-tool",
-  "description": "RealTimeWeb.co webinar tool",
   "version": "0.0.1",
-  "private": true,
+  "description": "RealTimeWeb.co webinar tool",
+  "main": "server.js",
   "dependencies": {
-    "express": "3.x",
-	"ejs": "0.8.4"
-  }
+    "body-parser": "^1.18.2",
+    "cookie-parser": "^1.4.3",
+    "ejs": "^2.5.7",
+    "express": "^4.15.5",
+    "express-session": "^1.15.6",
+    "install": "^0.10.1",
+    "method-override": "^2.3.10",
+    "npm": "^5.4.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC"
 }
