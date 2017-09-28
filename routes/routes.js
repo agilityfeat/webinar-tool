@@ -15,7 +15,5 @@ var routes = function (params) {
 		})
 
 }
-
 module.exports = routes;
-
 console.log("All routes registered");
