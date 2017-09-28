@@ -800,7 +800,12 @@
 				})
 
 				if(my_stream){
-					my_stream.stream.stop();
+					my_stream.stream.getAudioTracks().forEach(function(stream) {
+						stream.stop();
+					}, this);
+					my_stream.stream.getVideoTracks().forEach(function(stream) {
+						stream.stop();
+					}, this);
 					agility_webrtc.streams = _.reject(agility_webrtc.streams, function(stream){
 						return stream.who === "mine";
 					})
