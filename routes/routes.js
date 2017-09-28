@@ -1,5 +1,4 @@
 var routes = function (params) {
-
 	var app = params.app;
 
 	app.get('/', function(req, res){
@@ -9,9 +8,6 @@ var routes = function (params) {
 	app.get('/add', function(req, res){
 			res.render('add.ejs');
 		})
-
 }
-
 module.exports = routes;
-
 console.log("All routes registered");
