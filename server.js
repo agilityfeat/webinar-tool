@@ -8,9 +8,9 @@ var port = process.env.PORT || 3000;
 var app = express();
 
 app.use(cookieParser());
-app.use(session({ secret: "webinar-tool" }));
+app.use(session({ secret: "webinar-tool", resave: true, saveUninitialized: true }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(methodOverride());
 
 app.use(express.static(__dirname + '/public'));
